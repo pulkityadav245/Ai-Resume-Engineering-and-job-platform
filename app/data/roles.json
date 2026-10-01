@@ -1,0 +1,76 @@
+{
+  "roles": [
+    {
+      "name": "Full Stack Developer",
+      "core": ["JavaScript", "React", "Node.js", "REST API", "SQL", "Git"],
+      "optional": ["MongoDB", "Express.js", "TypeScript", "Docker", "PostgreSQL", "HTML", "CSS"],
+      "edu_keywords": ["computer", "information technology", "software", "bca", "mca", "b.tech", "b.e"],
+      "query_titles": ["Full Stack Developer", "MERN Stack Developer", "Software Engineer"],
+      "fresher_titles": ["Junior Full Stack Developer", "Graduate Engineer Trainee", "Software Developer Intern"]
+    },
+    {
+      "name": "Frontend Developer",
+      "core": ["JavaScript", "React", "HTML", "CSS", "Git"],
+      "optional": ["TypeScript", "Next.js", "Tailwind CSS", "Redux", "Jest"],
+      "edu_keywords": ["computer", "information technology", "software", "bca", "mca", "b.tech", "b.e"],
+      "query_titles": ["Frontend Developer", "React Developer", "UI Developer"],
+      "fresher_titles": ["Junior Frontend Developer", "React Developer Intern"]
+    },
+    {
+      "name": "Backend Developer (Python)",
+      "core": ["Python", "REST API", "SQL", "Git", "FastAPI"],
+      "optional": ["Django", "Flask", "PostgreSQL", "Docker", "Redis", "AWS", "JWT"],
+      "edu_keywords": ["computer", "information technology", "software", "bca", "mca", "b.tech", "b.e"],
+      "query_titles": ["Python Backend Developer", "Python Developer", "FastAPI Developer"],
+      "fresher_titles": ["Junior Python Developer", "Python Developer Intern"]
+    },
+    {
+      "name": "Backend Developer (Node.js)",
+      "core": ["JavaScript", "Node.js", "Express.js", "REST API", "MongoDB"],
+      "optional": ["TypeScript", "PostgreSQL", "Docker", "JWT", "Redis", "AWS"],
+      "edu_keywords": ["computer", "information technology", "software", "bca", "mca", "b.tech", "b.e"],
+      "query_titles": ["Node.js Developer", "Backend Developer", "Backend Engineer"],
+      "fresher_titles": ["Junior Node.js Developer", "Backend Developer Intern"]
+    },
+    {
+      "name": "Java Developer",
+      "core": ["Java", "Spring Boot", "SQL", "OOP", "Data Structures and Algorithms"],
+      "optional": ["MySQL", "REST API", "Microservices", "Docker", "Git"],
+      "edu_keywords": ["computer", "information technology", "software", "bca", "mca", "b.tech", "b.e"],
+      "query_titles": ["Java Developer", "Java Backend Developer", "Software Engineer Java"],
+      "fresher_titles": ["Junior Java Developer", "Graduate Engineer Trainee"]
+    },
+    {
+      "name": "Machine Learning Engineer",
+      "core": ["Python", "Machine Learning", "Deep Learning", "Pandas", "NumPy"],
+      "optional": ["PyTorch", "TensorFlow", "scikit-learn", "Computer Vision", "NLP", "Docker", "FastAPI"],
+      "edu_keywords": ["computer", "data", "artificial", "statistics", "mathematics", "b.tech", "m.tech"],
+      "query_titles": ["Machine Learning Engineer", "ML Engineer", "AI Engineer"],
+      "fresher_titles": ["Junior Machine Learning Engineer", "AI/ML Intern", "Associate Data Scientist"]
+    },
+    {
+      "name": "Data Analyst",
+      "core": ["Python", "SQL", "Pandas", "NumPy"],
+      "optional": ["Machine Learning", "Streamlit", "MySQL", "PostgreSQL"],
+      "edu_keywords": ["computer", "data", "statistics", "mathematics", "commerce", "b.tech", "bca"],
+      "query_titles": ["Data Analyst", "Business Analyst", "Python Data Analyst"],
+      "fresher_titles": ["Junior Data Analyst", "Data Analyst Intern"]
+    },
+    {
+      "name": "DevOps Engineer",
+      "core": ["Linux", "Docker", "Git", "CI/CD", "AWS"],
+      "optional": ["Kubernetes", "Python", "Jenkins"],
+      "edu_keywords": ["computer", "information technology", "b.tech", "b.e", "bca", "mca"],
+      "query_titles": ["DevOps Engineer", "Cloud Engineer", "Site Reliability Engineer"],
+      "fresher_titles": ["Junior DevOps Engineer", "DevOps Intern", "Cloud Support Associate"]
+    },
+    {
+      "name": "Software Engineer (Generalist)",
+      "core": ["Data Structures and Algorithms", "OOP", "Git", "SQL"],
+      "optional": ["Java", "C++", "Python", "DBMS", "Operating Systems", "Computer Networks", "System Design"],
+      "edu_keywords": ["computer", "information technology", "software", "b.tech", "b.e", "bca", "mca"],
+      "query_titles": ["Software Engineer", "Software Developer", "SDE"],
+      "fresher_titles": ["Associate Software Engineer", "Graduate Engineer Trainee", "SDE Intern"]
+    }
+  ]
+}

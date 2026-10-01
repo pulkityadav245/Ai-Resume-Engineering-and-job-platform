@@ -1,0 +1,423 @@
+{
+ "skills": [
+  {
+   "name": "Python",
+   "category": "language",
+   "aliases": [
+    "python3"
+   ]
+  },
+  {
+   "name": "Java",
+   "category": "language",
+   "aliases": [
+    "core java"
+   ]
+  },
+  {
+   "name": "C++",
+   "category": "language",
+   "aliases": [
+    "cpp"
+   ]
+  },
+  {
+   "name": "C",
+   "category": "language",
+   "aliases": [],
+   "case_sensitive_aliases": [
+    "C"
+   ]
+  },
+  {
+   "name": "JavaScript",
+   "category": "language",
+   "aliases": [
+    "es6",
+    "ecmascript"
+   ]
+  },
+  {
+   "name": "TypeScript",
+   "category": "language",
+   "aliases": []
+  },
+  {
+   "name": "SQL",
+   "category": "database",
+   "aliases": [
+    "structured query language"
+   ]
+  },
+  {
+   "name": "HTML",
+   "category": "frontend",
+   "aliases": [
+    "html5"
+   ]
+  },
+  {
+   "name": "CSS",
+   "category": "frontend",
+   "aliases": [
+    "css3"
+   ]
+  },
+  {
+   "name": "React",
+   "category": "frontend",
+   "aliases": [
+    "reactjs",
+    "react.js"
+   ]
+  },
+  {
+   "name": "Next.js",
+   "category": "frontend",
+   "aliases": [
+    "nextjs"
+   ]
+  },
+  {
+   "name": "Tailwind CSS",
+   "category": "frontend",
+   "aliases": [
+    "tailwind",
+    "tailwindcss"
+   ]
+  },
+  {
+   "name": "Redux",
+   "category": "frontend",
+   "aliases": [
+    "redux toolkit"
+   ]
+  },
+  {
+   "name": "Node.js",
+   "category": "backend",
+   "aliases": [
+    "nodejs",
+    "node js"
+   ]
+  },
+  {
+   "name": "Express.js",
+   "category": "backend",
+   "aliases": [
+    "expressjs"
+   ],
+   "case_sensitive_aliases": [
+    "Express"
+   ]
+  },
+  {
+   "name": "FastAPI",
+   "category": "backend",
+   "aliases": [
+    "fast api"
+   ]
+  },
+  {
+   "name": "Django",
+   "category": "backend",
+   "aliases": []
+  },
+  {
+   "name": "Flask",
+   "category": "backend",
+   "aliases": []
+  },
+  {
+   "name": "Spring Boot",
+   "category": "backend",
+   "aliases": [
+    "springboot"
+   ]
+  },
+  {
+   "name": "REST API",
+   "category": "backend",
+   "aliases": [
+    "restful",
+    "restful api",
+    "restful apis",
+    "rest apis",
+    "rest api"
+   ]
+  },
+  {
+   "name": "GraphQL",
+   "category": "backend",
+   "aliases": []
+  },
+  {
+   "name": "MongoDB",
+   "category": "database",
+   "aliases": [
+    "mongo",
+    "mongo db",
+    "mongoose"
+   ]
+  },
+  {
+   "name": "PostgreSQL",
+   "category": "database",
+   "aliases": [
+    "postgres",
+    "postgresql"
+   ]
+  },
+  {
+   "name": "MySQL",
+   "category": "database",
+   "aliases": []
+  },
+  {
+   "name": "Redis",
+   "category": "database",
+   "aliases": []
+  },
+  {
+   "name": "Docker",
+   "category": "devops",
+   "aliases": [
+    "dockerfile",
+    "docker compose"
+   ]
+  },
+  {
+   "name": "Kubernetes",
+   "category": "devops",
+   "aliases": [
+    "k8s"
+   ]
+  },
+  {
+   "name": "AWS",
+   "category": "cloud",
+   "aliases": [
+    "amazon web services",
+    "ec2",
+    "amazon s3",
+    "rds"
+   ]
+  },
+  {
+   "name": "Git",
+   "category": "tools",
+   "aliases": []
+  },
+  {
+   "name": "GitHub",
+   "category": "tools",
+   "aliases": []
+  },
+  {
+   "name": "Linux",
+   "category": "tools",
+   "aliases": [
+    "ubuntu"
+   ]
+  },
+  {
+   "name": "CI/CD",
+   "category": "devops",
+   "aliases": [
+    "github actions",
+    "jenkins",
+    "ci cd"
+   ]
+  },
+  {
+   "name": "Machine Learning",
+   "category": "ml",
+   "aliases": [
+    "ml"
+   ]
+  },
+  {
+   "name": "Deep Learning",
+   "category": "ml",
+   "aliases": [
+    "neural networks",
+    "neural network",
+    "cnn"
+   ]
+  },
+  {
+   "name": "NLP",
+   "category": "ml",
+   "aliases": [
+    "natural language processing"
+   ]
+  },
+  {
+   "name": "Computer Vision",
+   "category": "ml",
+   "aliases": [
+    "image classification",
+    "opencv"
+   ]
+  },
+  {
+   "name": "PyTorch",
+   "category": "ml",
+   "aliases": [
+    "torch"
+   ]
+  },
+  {
+   "name": "TensorFlow",
+   "category": "ml",
+   "aliases": [
+    "keras"
+   ]
+  },
+  {
+   "name": "scikit-learn",
+   "category": "ml",
+   "aliases": [
+    "sklearn",
+    "scikit learn"
+   ]
+  },
+  {
+   "name": "Pandas",
+   "category": "data",
+   "aliases": []
+  },
+  {
+   "name": "NumPy",
+   "category": "data",
+   "aliases": [
+    "numpy"
+   ]
+  },
+  {
+   "name": "Data Structures and Algorithms",
+   "category": "cs",
+   "aliases": [
+    "dsa",
+    "data structures",
+    "data structures & algorithms"
+   ]
+  },
+  {
+   "name": "OOP",
+   "category": "cs",
+   "aliases": [
+    "object oriented programming",
+    "object-oriented programming",
+    "oops"
+   ]
+  },
+  {
+   "name": "Operating Systems",
+   "category": "cs",
+   "aliases": [
+    "os concepts"
+   ]
+  },
+  {
+   "name": "DBMS",
+   "category": "cs",
+   "aliases": [
+    "database management systems",
+    "database management system"
+   ]
+  },
+  {
+   "name": "Computer Networks",
+   "category": "cs",
+   "aliases": []
+  },
+  {
+   "name": "System Design",
+   "category": "cs",
+   "aliases": [
+    "low level design",
+    "high level design"
+   ]
+  },
+  {
+   "name": "Microservices",
+   "category": "backend",
+   "aliases": [
+    "microservice"
+   ]
+  },
+  {
+   "name": "JWT",
+   "category": "backend",
+   "aliases": [
+    "json web token",
+    "json web tokens"
+   ]
+  },
+  {
+   "name": "Postman",
+   "category": "tools",
+   "aliases": []
+  },
+  {
+   "name": "Agile",
+   "category": "process",
+   "aliases": [
+    "scrum"
+   ]
+  },
+  {
+   "name": "Kafka",
+   "category": "backend",
+   "aliases": [
+    "apache kafka"
+   ]
+  },
+  {
+   "name": "Selenium",
+   "category": "testing",
+   "aliases": []
+  },
+  {
+   "name": "Jest",
+   "category": "testing",
+   "aliases": []
+  },
+  {
+   "name": "Pytest",
+   "category": "testing",
+   "aliases": []
+  },
+  {
+   "name": "Streamlit",
+   "category": "ml",
+   "aliases": []
+  },
+  {
+   "name": "LLM",
+   "category": "ml",
+   "aliases": [
+    "llms",
+    "large language models",
+    "large language model",
+    "generative ai",
+    "langchain"
+   ]
+  }
+ ],
+ "implies": {
+  "MERN": [
+   "MongoDB",
+   "Express.js",
+   "React",
+   "Node.js"
+  ],
+  "MEAN": [
+   "MongoDB",
+   "Express.js",
+   "Angular",
+   "Node.js"
+  ]
+ }
+}
