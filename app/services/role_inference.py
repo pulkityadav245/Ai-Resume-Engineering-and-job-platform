@@ -23,6 +23,10 @@ def _roles() -> list[dict]:
     return json.loads(ROLES.read_text(encoding="utf-8"))["roles"]
 
 
+def get_role_profiles() -> list[dict]:
+    return _roles()
+
+
 def infer_level(resume: ResumeData) -> str:
     real_jobs = [e for e in resume.experience if "intern" not in e.title.lower()
                  and "trainee" not in e.title.lower()]

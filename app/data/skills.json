@@ -404,6 +404,11 @@
     "generative ai",
     "langchain"
    ]
+  },
+  {
+   "name": "Plotly",
+   "category": "data",
+   "aliases": []
   }
  ],
  "implies": {

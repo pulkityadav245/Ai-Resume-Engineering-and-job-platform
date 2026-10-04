@@ -1,6 +1,6 @@
 """Pydantic schemas = the shared API contract for the whole team."""
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 SkillSource = Literal["skills_section", "coursework", "project_text", "inferred"]
 
@@ -55,6 +55,15 @@ class ResumeData(BaseModel):
     coursework: list[str] = Field(default_factory=list)
     certifications: list[str] = Field(default_factory=list)
     achievements: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_parse_response(cls, data):
+        """Be forgiving: also accept the whole /resume/parse response ({"resume": {...}, "warnings": ...}),
+        so copy-pasting the wrong level no longer silently yields an empty resume."""
+        if isinstance(data, dict) and isinstance(data.get("resume"), dict):
+            return data["resume"]
+        return data
 
 
 class GroundingIssue(BaseModel):

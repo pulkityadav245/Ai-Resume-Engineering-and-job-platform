@@ -289,3 +289,24 @@ def test_analyze_endpoint_one_call():
     assert resp.status_code == 200, resp.text
     body = resp.json()
     assert body["parse"]["resume"]["projects"] and body["roles"]["roles"][0]["role"]
+
+
+def test_roles_infer_accepts_whole_parse_response_and_bare_resume():
+    resume = parse_resume(SAMPLE_RESUME).model_dump()
+    bare = client.post("/api/v1/roles/infer", json=resume).json()
+    wrapped = client.post("/api/v1/roles/infer", json={"resume": resume, "grounding_issues": [],
+                                                      "warnings": [], "parser": "rule_based"}).json()
+    assert bare["roles"] and wrapped["roles"] == bare["roles"]
+
+
+def test_school_rows_and_per_row_years_scores():
+    text = ("Riya Verma\n\nEDUCATION\nCourse University Branch Year CGPA/%\n"
+            "B.Tech Graphic Era Hill University Computer Science and Engineering 2023-Present 8.64 CGPA\n"
+            "XII Renaissance Dron School PCM 2022-23 89.8%\nXI Renaissance Dron School 2020-21 89.4%\n\n"
+            "PROJECTS\n\u2022 Sim (Jul'25)\n\u25e6 Did things\n\u25e6 Technologies Used: Python, FastAPI, StreamLit, Plotly.\n")
+    r = parse_resume(text)
+    rows = [(e.degree, e.institute, e.years, e.score) for e in r.education]
+    assert rows[0] == ("B.Tech Computer Science and Engineering", "Graphic Era Hill University", "2023 - Present", "8.64 CGPA")
+    assert rows[1] == ("XII PCM", "Renaissance Dron School", "2022 - 2023", "89.8%")
+    assert rows[2] == ("XI", "Renaissance Dron School", "2020 - 2021", "89.4%")
+    assert "Plotly" in r.projects[0].skills_used

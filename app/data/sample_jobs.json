@@ -1,0 +1,131 @@
+{
+ "_note": "FICTIONAL demo data for development only. Not real job postings.",
+ "jobs": [
+  {
+   "external_id": "demo-1",
+   "title": "Junior Full Stack Developer (MERN)",
+   "company": "DemoCorp Labs",
+   "location": "Bengaluru, Karnataka",
+   "description": "We need a graduate developer. Required: JavaScript, React, Node.js, Express and MongoDB. Build REST APIs and responsive UI with HTML and CSS. Git workflow. Good to have: Docker, TypeScript.",
+   "url": "https://example.com/demo-jobs/1",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-2",
+   "title": "Node.js Backend Developer",
+   "company": "SampleSoft Pvt Ltd",
+   "location": "Remote, India",
+   "description": "Design REST APIs using Node.js and Express.js with MongoDB. 0-2 years of experience. Must know JavaScript and Git. Nice to have: AWS, Redis, Docker.",
+   "url": "https://example.com/demo-jobs/2",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-3",
+   "title": "Senior Full Stack Engineer",
+   "company": "BigDemo Technologies",
+   "location": "Gurugram, Haryana",
+   "description": "5+ years of experience required. Strong React, Node.js, TypeScript and PostgreSQL. Lead a team, system design, Kubernetes and AWS.",
+   "url": "https://example.com/demo-jobs/3",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-4",
+   "title": "Python Developer - FastAPI",
+   "company": "ExampleWorks",
+   "location": "Noida, Uttar Pradesh",
+   "description": "Build microservices with Python and FastAPI. Required: Python, REST API, SQL, Git. Preferred: Docker, PostgreSQL, AWS. 1-3 years experience.",
+   "url": "https://example.com/demo-jobs/4",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-5",
+   "title": "Graduate Engineer Trainee",
+   "company": "DemoCorp Labs",
+   "location": "Pune, Maharashtra",
+   "description": "Freshers welcome. Strong fundamentals in Data Structures and Algorithms, OOP and DBMS. Knowledge of Java or Python and SQL. Git.",
+   "url": "https://example.com/demo-jobs/5",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-6",
+   "title": "Java Spring Boot Developer",
+   "company": "SampleSoft Pvt Ltd",
+   "location": "Hyderabad, Telangana",
+   "description": "3+ years of experience in Java, Spring Boot, MySQL and microservices. Required: Java, Spring Boot, SQL. Plus: Kafka, Docker.",
+   "url": "https://example.com/demo-jobs/6",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-7",
+   "title": "Frontend Developer - React",
+   "company": "PixelDemo Studio",
+   "location": "Remote, India",
+   "description": "Create interfaces in React with JavaScript, HTML and CSS. Required: React, JavaScript, Git. Nice to have: Tailwind CSS, Next.js, Redux. 0-1 years.",
+   "url": "https://example.com/demo-jobs/7",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-8",
+   "title": "Machine Learning Engineer",
+   "company": "DemoAI Research",
+   "location": "Bengaluru, Karnataka",
+   "description": "Train deep learning models in Python with PyTorch or TensorFlow. Required: Python, Machine Learning, Deep Learning, Pandas, NumPy. 2+ years.",
+   "url": "https://example.com/demo-jobs/8",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-9",
+   "title": "Software Developer Intern",
+   "company": "ExampleWorks",
+   "location": "Dehradun, Uttarakhand",
+   "description": "Internship for students. Work with JavaScript, Node.js, SQL and Git. Learn REST API development. Linux basics a plus.",
+   "url": "https://example.com/demo-jobs/9",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-10",
+   "title": "DevOps Engineer",
+   "company": "CloudDemo Systems",
+   "location": "Chennai, Tamil Nadu",
+   "description": "4+ years. Required: Linux, Docker, Kubernetes, AWS, CI/CD, Git. Preferred: Python.",
+   "url": "https://example.com/demo-jobs/10",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-11",
+   "title": "Associate Software Engineer",
+   "company": "SampleSoft Pvt Ltd",
+   "location": "Noida, Uttar Pradesh",
+   "description": "Entry level role. Required: Data Structures and Algorithms, OOP, SQL, Git. Preferred: Java, C++, Python, Operating Systems.",
+   "url": "https://example.com/demo-jobs/11",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-12",
+   "title": "Data Analyst",
+   "company": "NumberDemo Analytics",
+   "location": "Mumbai, Maharashtra",
+   "description": "Analyse data using Python, SQL, Pandas and NumPy. Required: SQL, Python. Preferred: Streamlit, Machine Learning. 0-2 years.",
+   "url": "https://example.com/demo-jobs/12",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-13",
+   "title": "MERN Stack Developer",
+   "company": "DemoCorp Labs",
+   "location": "Bengaluru, Karnataka",
+   "description": "Develop features with MongoDB, Express.js, React and Node.js. Required: JavaScript, REST API, Git. Experience 1-3 years. Plus: Docker, AWS.",
+   "url": "https://example.com/demo-jobs/13",
+   "posted_at": "2026-09-28T00:00:00Z"
+  },
+  {
+   "external_id": "demo-14",
+   "title": "Junior Full Stack Developer (MERN)",
+   "company": "DemoCorp Labs",
+   "location": "Bengaluru, Karnataka",
+   "description": "DUPLICATE POSTING of the first job to test deduplication. JavaScript, React, Node.js, Express and MongoDB.",
+   "url": "https://example.com/demo-jobs/14",
+   "posted_at": "2026-09-28T00:00:00Z"
+  }
+ ]
+}

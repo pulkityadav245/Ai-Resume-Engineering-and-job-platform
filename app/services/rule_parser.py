@@ -29,7 +29,17 @@ DEGREE = re.compile(
     r"\b(b\.?\s?tech|m\.?\s?tech|b\.?\s?e\b|m\.?\s?e\b|bca|mca|b\.?\s?sc|m\.?\s?sc|bachelors?|masters?|"
     r"diploma|class\s?x{1,2}i{0,2}|12th|10th|intermediate|higher secondary|senior secondary)\b", re.I)
 INSTITUTE = re.compile(r"(university|institute|college|school|academy|iit|nit)", re.I)
-YEARS = re.compile(r"((?:19|20)\d{2})\s*[-\u2013\u2014to]*\s*((?:19|20)\d{2}|present|current)?", re.I)
+YEARS = re.compile(r"((?:19|20)\d{2})(?:\s*(?:[-\u2013\u2014]|\bto\b)\s*((?:19|20)?\d{2}|present|current))?", re.I)
+SCHOOL_ROW = re.compile(r"^\s*(xii|xi|x)\b", re.I)   # table rows like "XII  Some School  PCM  2022-23  89.8%"
+
+
+def _years(m) -> str | None:
+    if not m:
+        return None
+    end = m.group(2)
+    if end and len(end) == 2:
+        end = m.group(1)[:2] + end
+    return m.group(1) + (f" - {end}" if end else "")
 
 
 FUZZY = {
@@ -98,7 +108,7 @@ def _parse_education(block: str) -> list[Education]:
     out: list[Education] = []
     lines = [l.strip() for l in block.splitlines() if l.strip() and not _is_table_header(l)]
     for i, line in enumerate(lines):
-        dm = DEGREE.search(line)
+        dm = DEGREE.search(line) or SCHOOL_ROW.match(line)
         if not dm:
             continue
         window = lines[max(0, i - 1): i + 3]
@@ -112,9 +122,8 @@ def _parse_education(block: str) -> list[Education]:
             inst = next((w for w in window if INSTITUTE.search(w)), None)
             if inst:
                 inst = re.sub(r"[\s,|-]*\(?(?:19|20)\d{2}.*$", "", inst).strip(" ,|-") or inst
-        ym = YEARS.search(wtext)
-        years = (ym.group(1) + (f" - {ym.group(2)}" if ym.group(2) else "")) if ym else None
-        sm = SCORE_RE.search(wtext)
+        years = _years(YEARS.search(line) or YEARS.search(wtext))
+        sm = SCORE_RE.search(line) or SCORE_RE.search(wtext)
         score = sm.group(0).strip() if sm else None
         # degree text = this line minus institute / years / score
         d = line
@@ -127,9 +136,8 @@ def _parse_education(block: str) -> list[Education]:
                              years=years, score=score))
     if not out and lines:   # heading found but no known degree keyword: keep the raw lines
         inst = next((l for l in lines if INSTITUTE.search(l)), None)
-        ym = YEARS.search(" ".join(lines))
         out.append(Education(id="edu_1", degree=lines[0], institute=inst if inst != lines[0] else None,
-                             years=(ym.group(1) + (f" - {ym.group(2)}" if ym.group(2) else "")) if ym else None))
+                             years=_years(YEARS.search(" ".join(lines)))))
     return out
 
 
