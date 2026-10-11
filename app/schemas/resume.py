@@ -8,6 +8,8 @@ SkillSource = Literal["skills_section", "coursework", "project_text", "inferred"
 class Bullet(BaseModel):
     id: str
     text: str
+    source_id: str | None = None     # tailoring: id of the Master Resume bullet this text came from
+    rewritten: bool = False          # tailoring: True when the text differs from the source bullet
 
 
 class Personal(BaseModel):

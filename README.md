@@ -62,3 +62,46 @@ Optional LLM parsing: copy `.env.example` to `.env`, set `ANTHROPIC_API_KEY`
 Open http://127.0.0.1:8000/ after `uvicorn app.main:app --reload` (API docs stay at /docs).
 Files: `app/static/index.html`, `style.css`, `app.js` -- no build step. To add a feature, write a view
 function in `app.js` and add one object to the `FEATURES` array (ATS, Tailor and Tracker are placeholders).
+
+## Module 3: scale for Indian jobs (ingest once, search many times)
+`provider (Adzuna | mock) -> ingestion worker -> normalise + dedup -> database -> search from the database`
+
+* **Why:** a live API call per user search burns quota and cannot scale. Ingestion runs from a CLI/scheduler,
+  searches then read the database (`POST /api/v1/jobs/search` with `"source": "database"`).
+* **Storage:** SQLAlchemy. `DATABASE_URL` defaults to local SQLite; point it at Postgres/RDS for production.
+  Tables are created automatically. `jobs` is unique per (source, external_id) and per cross-source dedup key.
+* **India layer:** `app/data/india.py` maps city aliases (Bangalore -> Bengaluru, Gurgaon -> Gurugram...), used for
+  filtering and for the ingestion matrix.
+* **Commands**
+  ```bash
+  python -m app.cli ingest --dry-run --cities top --roles all          # see how many requests it would make
+  python -m app.cli ingest --provider adzuna --cities Bengaluru,Pune,Dehradun --roles all --max-requests 100
+  python -m app.cli stats                                              # totals, cities, most demanded skills
+  ```
+  `GET /api/v1/jobs/stats` returns the same numbers for the UI.
+* **Quota:** titles x cities x pages can be hundreds of requests; `--max-requests` is a hard cap. Free-tier limits
+  of providers are unknown/unverified, so start small.
+
+## Known limitations (Module 3)
+* No official public Naukri API exists (sources agree); scraping Naukri/LinkedIn has ToS and legal risk and is not implemented.
+* Indian-market coverage/quality of Adzuna is unverified until real keys are used.
+* Search from the DB filters by title tokens (SQL LIKE) then ranks in Python; fine for tens of thousands of jobs,
+  not millions. Next steps: full-text index / pgvector embeddings, ESCO + NCO taxonomy import, scheduled ingestion.
+* Upserts are row-by-row (simple, slow for bulk loads). Jobs that disappear from a provider are not yet marked inactive.
+
+## ATS-readiness checker (`POST /api/v1/ats/check`)
+Upload a PDF/DOCX (optionally `jd_text` as a form field) -> score 0-100, per-category scores, 20 weighted checks with plain-English
+details and fixes, and the top fixes by impact. Code: `app/services/ats.py`; weights are the `weight` argument of each `add(...)` call.
+* Categories: Parseability (text extractable, tables, single-column layout, images), Contact, Sections, Format (length, date
+  consistency, bullets, symbols), Content (action verbs, numbers, bullet length, first person), Keywords (skills breadth, skills backed by
+  projects, optional JD keyword coverage; weights are renormalised when no JD is given).
+* Layout check: from PDF word positions (a wide gap near the page middle on many lines = columns suspected) and embedded image count.
+* **This is a transparent heuristic, NOT any company's ATS score.** Weights are unvalidated.
+* Validation: `python -m app.cli eval-ats` injects one defect at a time into a clean synthetic resume (14 defect kinds) and checks that the
+  matching check fires and the score drops. This shows internal consistency only, not agreement with real ATS software.
+
+## Tailoring and hallucination metrics
+* `POST /api/v1/tailor` (extractive by default; `mode=rewrite` needs an LLM key). `app/services/factuality.py` validates and repairs.
+* `python -m app.cli eval-tailoring` writes `eval/tailoring_report.md`. The default model is SIMULATED (measures the validator, not a real LLM);
+  `--llm` uses a real model when `ANTHROPIC_API_KEY` is set. Seeds are deterministic.
+* Attestation of user-added skills is NOT implemented yet: a skill typed in the UI is currently trusted as part of the Master Resume.

@@ -1,6 +1,8 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from app.schemas.resume import ParseResponse
+from app.schemas.keywords import KeywordProfile
+from app.schemas.resume import ParseResponse, ResumeData
+from app.services.keyword_profile import build_keyword_profile
 from app.services.pdf_extract import ExtractionError
 from app.services.resume_service import parse_upload
 
@@ -33,3 +35,9 @@ async def debug_extraction(file: UploadFile = File(...)):
     secs = split_sections(ex.text)
     return {"links": ex.links, "warnings": ex.warnings,
             "sections_found": {k: v[:200] for k, v in secs.items()}, "text": ex.text}
+
+
+@router.post("/keywords", response_model=KeywordProfile)
+def keywords(resume: ResumeData):
+    """Weighted keyword profile: proven (project/job), recent and certified skills weigh more."""
+    return build_keyword_profile(resume)

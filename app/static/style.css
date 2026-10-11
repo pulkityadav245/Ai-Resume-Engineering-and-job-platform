@@ -27,3 +27,5 @@ input,.btn{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(
 .job{display:flex;justify-content:space-between;gap:12px}.job a{color:var(--acc)}
 ul{margin:4px 0;padding-left:20px}pre.json{overflow:auto;max-height:520px;font-size:12px}
 @media (max-width:760px){.layout{grid-template-columns:1fr}nav{flex-direction:row;flex-wrap:wrap}}
+textarea{width:100%;margin-top:8px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+select{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}

@@ -117,3 +117,35 @@ def match_job(job: Job, resume: ResumeData, level: str, candidate_titles: list[s
         jd_skills_found=len(jd), title_relevance=tr, level_fit=lf,
         experience_required_years=years, via_roles=via_roles, flags=flags,
     )
+
+
+# ---------- G8: intern / fresher / experienced detection ----------
+_INTERN = re.compile(r"\binterns?(?:hip)?\b", re.I)
+_FRESHER = re.compile(r"\b(fresher|freshers|graduate|trainee|entry[- ]level|campus)\b", re.I)
+
+
+def detect_job_type(job: Job) -> str:
+    """intern | fresher | experienced | unspecified (heuristic on title, then description)."""
+    title, text = job.title, f"{job.title}. {job.description}"
+    if _INTERN.search(title):
+        return "intern"
+    if SENIOR.search(title):
+        return "experienced"
+    years = experience_required(job)
+    if _FRESHER.search(title) or JUNIOR.search(title):
+        return "fresher"
+    if years is not None:
+        return "experienced" if years >= 2 else "fresher"
+    if _INTERN.search(text):
+        return "intern"
+    if _FRESHER.search(text):
+        return "fresher"
+    return "unspecified"
+
+
+def passes_job_type(job: Job, wanted: str) -> bool:
+    """any = no filter; intern = internships only; fresher = fresher/unspecified (no interns, no experienced)."""
+    if wanted == "any":
+        return True
+    kind = detect_job_type(job)
+    return kind == "intern" if wanted == "intern" else kind in ("fresher", "unspecified")

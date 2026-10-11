@@ -31,7 +31,8 @@ async function api(path, opts = {}) {
 }
 
 const state = { tab: 'resume', file: null, parse: null, resume: null, roles: null, level: null,
-  jobs: null, picked: new Set(), loc: '', minScore: 25, busy: '', error: '' };
+  jobs: null, picked: new Set(), loc: '', minScore: 25, source: 'live', jd: '', jdTitle: '', mode: 'extractive', jobType: 'any', ats: null, tailor: null, keywords: null, stats: null,
+  busy: '', error: '' };
 const set = (p) => { Object.assign(state, p); render(); };
 async function run(label, fn) {
   set({ busy: label, error: '' });
@@ -53,7 +54,7 @@ const rescoreRoles = () => run('Re-scoring roles...', async () => {
 const searchJobs = () => run('Searching jobs...', async () => {
   const roles = [...state.picked];
   const body = { resume: state.resume, roles: roles.length ? roles : null, location: state.loc.trim() || null,
-    min_score: Number(state.minScore) || 0, max_results: 30 };
+    min_score: Number(state.minScore) || 0, max_results: 30, source: state.source, job_type: state.jobType };
   state.jobs = await api('/jobs/search', { method: 'POST', headers: JSON_H, body: JSON.stringify(body) });
   state.tab = 'jobs';
 });
@@ -125,10 +126,19 @@ function viewJobs() {
     h('div', { class: 'row' },
       h('input', { placeholder: 'Location (e.g. Bengaluru, Remote)', value: state.loc, oninput: (e) => { state.loc = e.target.value; } }),
       h('label', null, 'Min score ', h('input', { type: 'number', class: 'num', min: 0, max: 100, value: state.minScore, oninput: (e) => { state.minScore = e.target.value; } })),
+      h('select', { onchange: (e) => { state.source = e.target.value; } },
+        h('option', { value: 'live', selected: state.source === 'live' }, 'Live API'),
+        h('option', { value: 'database', selected: state.source === 'database' }, 'Saved jobs database')),
+      h('select', { onchange: (e) => { state.jobType = e.target.value; } },
+        h('option', { value: 'any', selected: state.jobType === 'any' }, 'Any level'),
+        h('option', { value: 'fresher', selected: state.jobType === 'fresher' }, 'Fresher'),
+        h('option', { value: 'intern', selected: state.jobType === 'intern' }, 'Internship')),
+      h('button', { class: 'btn ghost', disabled: !!state.busy, onclick: loadStats }, 'DB stats'),
       h('button', { class: 'btn', disabled: !!state.busy, onclick: searchJobs }, 'Search jobs')));
-  if (!j) return [ctl];
+  const st = state.stats ? statsCard() : null;
+  if (!j) return [ctl, st];
   const money = (n) => new Intl.NumberFormat('en-IN').format(Math.round(n));
-  return [ctl,
+  return [ctl, st,
     j.warnings.map((w) => h('div', { class: 'banner warn' }, w)),
     h('p', { class: 'muted' }, 'Provider: ' + j.provider + ' \u00b7 level: ' + j.level + ' \u00b7 fetched ' + j.total_fetched + ', unique ' + j.after_dedup + ', shown ' + j.jobs.length
       + ' \u00b7 roles: ' + j.roles_used.map((r) => r.role + ' (' + r.fetched + ')').join(', ')),
@@ -149,14 +159,92 @@ const viewDebug = () => [h('section', { class: 'card' }, h('h2', null, 'Raw API 
   h('p', { class: 'muted' }, 'Exactly what the backend returned. Useful to explain the pipeline.'),
   h('pre', { class: 'json' }, JSON.stringify({ parse: state.parse, roles: state.roles, jobs: state.jobs }, null, 2)))];
 
+/* ---------- ATS, Tailor, Keywords, DB stats ---------- */
+const runAts = () => run('Checking ATS readiness...', async () => {
+  const fd = new FormData(); fd.append('file', state.file);
+  if (state.jd.trim()) fd.append('jd_text', state.jd);
+  state.ats = await api('/ats/check', { method: 'POST', body: fd });
+});
+const runTailor = () => run('Tailoring resume...', async () => {
+  state.tailor = await api('/tailor', { method: 'POST', headers: JSON_H, body: JSON.stringify({
+    resume: state.resume, jd_text: state.jd, jd_title: state.jdTitle.trim() || null, mode: state.mode }) });
+});
+const loadKeywords = () => run('Weighting keywords...', async () => {
+  state.keywords = await api('/resume/keywords', { method: 'POST', headers: JSON_H, body: JSON.stringify(state.resume) });
+});
+const loadStats = () => run('Loading database stats...', async () => { state.stats = await api('/jobs/stats'); });
+const tone = (s) => (s === 'pass' ? 'good' : s === 'warn' ? 'warn' : 'bad');
+const pct = (x) => Math.round(x * 100) + '%';
+
+const jdBox = (note) => h('section', { class: 'card' }, h('h2', null, 'Job description'), h('p', { class: 'muted' }, note),
+  h('input', { placeholder: 'Job title (optional)', value: state.jdTitle, oninput: (e) => { state.jdTitle = e.target.value; } }),
+  h('textarea', { rows: 8, placeholder: 'Paste the job description here', oninput: (e) => { state.jd = e.target.value; } }, state.jd));
+
+function viewAts() {
+  const a = state.ats;
+  return [jdBox('Optional for the ATS check: adds job-keyword coverage.'),
+    h('button', { class: 'btn', disabled: !!state.busy || !state.file, onclick: runAts }, 'Check ATS readiness'),
+    a && h('section', { class: 'card' }, h('h2', null, 'ATS-readiness: ' + a.score + ' / 100 \u00b7 ' + a.label),
+      h('div', { class: 'bar' }, h('div', { class: 'fill', style: 'width:' + a.score + '%' })),
+      h('p', { class: 'muted' }, a.disclaimer),
+      h('div', null, Object.entries(a.categories).map(([k, v]) => chip(k + ' ' + Math.round(v), v >= 80 ? 'good' : v >= 60 ? 'warn' : 'bad')))),
+    a && a.top_fixes.length > 0 && h('section', { class: 'card' }, h('h2', null, 'Top fixes'), h('ul', null, a.top_fixes.map((f) => h('li', null, f)))),
+    a && h('section', { class: 'card' }, h('h2', null, 'All checks'), a.checks.map((c) => h('div', { class: 'job' },
+      h('div', null, h('b', null, c.name), h('div', { class: 'muted' }, c.detail)), chip(c.status + ' ' + pct(c.score), tone(c.status)))))];
+}
+
+function viewTailor() {
+  const t = state.tailor;
+  const head = [jdBox('The tailored resume is built ONLY from your Master Resume. Skills the job wants but you lack are reported as gaps, never added.'),
+    h('div', { class: 'row' },
+      h('select', { onchange: (e) => { state.mode = e.target.value; } },
+        h('option', { value: 'extractive', selected: state.mode === 'extractive' }, 'Extractive (no new text, no key needed)'),
+        h('option', { value: 'rewrite', selected: state.mode === 'rewrite' }, 'Model rewrite (needs ANTHROPIC_API_KEY)')),
+      h('button', { class: 'btn', disabled: !!state.busy, onclick: runTailor }, 'Tailor resume'))];
+  if (!t) return head;
+  const f = t.factuality, b = t.factuality_before_enforcement, tr = t.tailored;
+  return [...head,
+    h('section', { class: 'card' }, h('h2', null, 'Skills vs this job'),
+      h('div', null, t.matched_skills.map((s) => chip(s, 'good')), t.skill_gap.map((s) => chip('gap: ' + s + ' (not added)', 'bad'))),
+      h('p', { class: 'muted' }, 'JD keyword coverage: before ' + pct(t.coverage.before) + ' \u2192 after ' + pct(t.coverage.after) + ' \u00b7 ceiling without inventing anything ' + pct(t.coverage.ceiling))),
+    h('section', { class: 'card' }, h('h2', null, 'Factuality check'),
+      h('div', null, chip(f.passed ? 'passed' : 'failed', f.passed ? 'good' : 'bad'), chip('claims checked ' + f.claims_checked), chip('unsupported ' + f.unsupported),
+        chip('copied bullets ' + pct(f.extractive_ratio)), chip('traceable ' + pct(f.traceability_coverage))),
+      b && b.unsupported > 0 && h('div', null, h('p', { class: 'muted' }, 'The model output had ' + b.unsupported + ' unsupported claim(s); they were reverted:'),
+        h('ul', null, b.violations.filter((v) => v.severity === 'error').slice(0, 12).map((v) => h('li', null, v.type + ': ' + v.value + ' \u2014 ' + v.reason))))),
+    h('section', { class: 'card' }, h('h2', null, 'What changed'), h('ul', null, t.changes.map((c) => h('li', null, c)))),
+    h('section', { class: 'card' }, h('h2', null, 'Tailored resume'),
+      h('div', null, tr.skills.map((s) => chip(s.name, t.matched_skills.includes(s.name) ? 'good' : ''))),
+      [...tr.projects, ...tr.experience].map((it) => h('div', null, h('h3', null, it.title),
+        h('ul', null, it.bullets.map((x) => h('li', null, x.text, ' ', h('span', { class: 'muted' }, '[' + x.source_id + (x.rewritten ? ', rewritten' : '') + ']'))))))) ];
+}
+
+function viewKeywords() {
+  const k = state.keywords;
+  return [h('section', { class: 'card' }, h('h2', null, 'Weighted keyword profile'),
+    h('p', { class: 'muted' }, 'Skills used in projects or jobs, recent work and certificates weigh more than skills that are only listed.'),
+    h('button', { class: 'btn', disabled: !!state.busy, onclick: loadKeywords }, 'Compute keyword weights')),
+    k && h('section', { class: 'card' }, k.skills.map((s) => h('div', { class: 'job' },
+      h('div', null, h('b', null, s.skill), h('div', { class: 'muted' }, Object.entries(s.components).map(([a, v]) => a.replace(/_/g, ' ') + ' ' + v).join(' \u00b7 '))),
+      h('span', { class: 'score' }, s.weight.toFixed(1)))))];
+}
+
+function statsCard() {
+  const s = state.stats;
+  return h('section', { class: 'card' }, h('h2', null, 'Saved jobs database: ' + s.total_jobs + ' jobs'),
+    h('div', null, s.by_source.map((x) => chip(x.name + ' ' + x.jobs)), s.top_cities.map((x) => chip(x.name + ' ' + x.jobs, 'good'))),
+    h('p', { class: 'muted' }, 'Most demanded skills: ' + (s.top_skills.map((x) => x.name + ' (' + x.jobs + ')').join(', ') || 'none yet')));
+}
+
 /* ---------- feature registry: add new features here ---------- */
 const FEATURES = [
   { id: 'resume', title: '1 \u00b7 Resume', render: viewResume },
   { id: 'roles', title: '2 \u00b7 Target roles', render: viewRoles, needs: 'roles' },
   { id: 'jobs', title: '3 \u00b7 Job search', render: viewJobs, needs: 'resume' },
   { id: 'debug', title: 'Raw JSON', render: viewDebug, needs: 'resume' },
-  { id: 'ats', title: 'ATS check', soon: true },
-  { id: 'tailor', title: 'Tailor resume', soon: true },
+  { id: 'ats', title: '4 \u00b7 ATS check', render: viewAts, needs: 'resume' },
+  { id: 'tailor', title: '5 \u00b7 Tailor resume', render: viewTailor, needs: 'resume' },
+  { id: 'keywords', title: 'Keywords', render: viewKeywords, needs: 'resume' },
   { id: 'tracker', title: 'Tracker', soon: true },
 ];
 

@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from app.schemas.resume import ResumeData
@@ -39,6 +41,8 @@ class JobSearchRequest(BaseModel):
     top_roles: int = Field(3, ge=1, le=5)
     max_results: int = Field(30, ge=1, le=100)
     min_score: float = Field(25.0, ge=0, le=100)
+    job_type: Literal["any", "intern", "fresher"] = "any"   # intern = internships only; fresher = entry-level, no interns
+    source: Literal["live", "database"] = "live"   # live = call the provider now; database = search stored jobs
 
 
 class RoleQuery(BaseModel):

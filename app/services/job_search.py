@@ -4,7 +4,7 @@ import re
 
 from app.schemas.jobs import Job, JobMatch, JobSearchResponse, RoleQuery
 from app.schemas.resume import ResumeData
-from app.services.job_matcher import match_job
+from app.services.job_matcher import match_job, passes_job_type
 from app.services.job_providers.base import JobProvider, ProviderError
 from app.services.role_inference import get_role_profiles, infer_roles
 
@@ -47,7 +47,7 @@ def _plan_queries(resume: ResumeData, roles: list[str] | None, top_roles: int):
 
 async def search_jobs(resume: ResumeData, provider: JobProvider, roles: list[str] | None = None,
                       location: str | None = None, top_roles: int = 3, max_results: int = 30,
-                      min_score: float = 25.0) -> JobSearchResponse:
+                      min_score: float = 25.0, job_type: str = "any") -> JobSearchResponse:
     level, plan = _plan_queries(resume, roles, top_roles)
     warnings: list[str] = []
     if not plan:
@@ -92,6 +92,8 @@ async def search_jobs(resume: ResumeData, provider: JobProvider, roles: list[str
     cands = {role: c for role, _s, _q, c in plan}
     matches: list[JobMatch] = []
     for job, via in merged.values():
+        if not passes_job_type(job, job_type):
+            continue
         titles = [t for r in via for t in cands[r]]
         matches.append(match_job(job, resume, level, titles, via))
     matches.sort(key=lambda m: m.score, reverse=True)

@@ -20,7 +20,7 @@ from tests.sample_resume import SAMPLE_RESUME
 client = TestClient(app)
 RESUME = parse_resume(SAMPLE_RESUME)      # MERN fresher with React/Node/Mongo/Docker/Jest...
 
-MOCK_APP_KEY = "dummy_test_key"
+SECRET = "s3cr3t-app-key-value"
 ADZUNA_PAYLOAD = {"count": 2, "results": [
     {"id": "111", "title": "<strong>Node.js</strong> Developer", "description": "Build APIs with <strong>Node.js</strong> &amp; MongoDB.",
      "redirect_url": "https://www.adzuna.in/land/ad/111?utm=api", "created": "2026-09-30T10:00:00Z",
@@ -31,7 +31,7 @@ ADZUNA_PAYLOAD = {"count": 2, "results": [
 
 
 def adz(handler):
-    return AdzunaProvider("ID", MOCK_APP_KEY, "in", transport=httpx.MockTransport(handler))
+    return AdzunaProvider("ID", SECRET, "in", transport=httpx.MockTransport(handler))
 
 
 # ---------- Adzuna provider ----------
@@ -66,14 +66,14 @@ def test_adzuna_per_page_capped_at_50():
 def test_adzuna_errors_never_leak_key(status, needle):
     with pytest.raises(ProviderError) as e:
         asyncio.run(adz(lambda r: httpx.Response(status)).search("x"))
-    assert needle in str(e.value) and MOCK_APP_KEY not in str(e.value)
+    assert needle in str(e.value) and SECRET not in str(e.value)
 
 
 def test_adzuna_network_error_is_provider_error_without_url():
     def boom(req): raise httpx.ConnectError("down", request=req)
     with pytest.raises(ProviderError) as e:
         asyncio.run(adz(boom).search("x"))
-    assert "app_key" not in str(e.value) and MOCK_APP_KEY not in str(e.value)
+    assert "app_key" not in str(e.value) and SECRET not in str(e.value)
 
 
 def test_cache_prevents_second_api_call():

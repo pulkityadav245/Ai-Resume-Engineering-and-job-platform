@@ -17,9 +17,35 @@ class ExtractedText:
     pages: int = 1
     warnings: list[str] = field(default_factory=list)
     links: list[str] = field(default_factory=list)   # real hyperlink targets (not visible in text)
+    layout: dict = field(default_factory=dict)       # {'columns_suspected': bool, 'gap_line_ratio': float, 'images': int}
 
 
 MIN_CHARS = 80
+
+
+def analyse_layout(pages) -> dict:
+    """Heuristic layout check from word positions. A line whose words are split by a wide gap near the middle of
+    the page suggests two columns (many ATS read columns in the wrong order). Also counts embedded images."""
+    lines = gap_lines = images = 0
+    for page in pages:
+        images += len(page.images or [])
+        width = float(page.width or 1)
+        rows: dict[int, list] = {}
+        for w in page.extract_words() or []:
+            rows.setdefault(round(float(w["top"]) / 3), []).append(w)
+        for ws in rows.values():
+            if len(ws) < 2:
+                continue
+            ws.sort(key=lambda w: float(w["x0"]))
+            lines += 1
+            for a, b in zip(ws, ws[1:]):
+                gap = float(b["x0"]) - float(a["x1"])
+                mid = (float(a["x1"]) + float(b["x0"])) / 2 / width
+                if gap > 0.08 * width and 0.25 <= mid <= 0.75:
+                    gap_lines += 1
+                    break
+    ratio = gap_lines / lines if lines else 0.0
+    return {"columns_suspected": gap_lines >= 8 and ratio >= 0.35, "gap_line_ratio": round(ratio, 3), "images": images}
 
 
 def extract_pdf(data: bytes) -> ExtractedText:
@@ -38,6 +64,7 @@ def extract_pdf(data: bytes) -> ExtractedText:
                     if uri.lower().startswith("http") and uri not in links:
                         links.append(uri)
             pages = len(pdf.pages)
+            layout = analyse_layout(pdf.pages)
     except Exception as e:  # corrupted / encrypted
         raise ExtractionError(f"Could not read PDF: {e}") from e
 
@@ -46,7 +73,7 @@ def extract_pdf(data: bytes) -> ExtractedText:
         raise ScannedPDFError(
             "No readable text found. Please upload a text-based PDF (not a scanned image)."
         )
-    return ExtractedText(text=text, pages=pages, warnings=warnings, links=links)
+    return ExtractedText(text=text, pages=pages, warnings=warnings, links=links, layout=layout)
 
 
 def extract_docx(data: bytes) -> ExtractedText:

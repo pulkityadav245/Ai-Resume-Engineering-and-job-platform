@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.core import config  # noqa: F401  (loads .env)
-from app.api.v1 import analyze, jobs, resume, roles
+from app.api.v1 import analyze, ats, jobs, resume, roles, tailor
 
 STATIC = Path(__file__).parent / "static"
 
@@ -14,6 +14,8 @@ app.include_router(resume.router, prefix="/api/v1")
 app.include_router(roles.router, prefix="/api/v1")
 app.include_router(jobs.router, prefix="/api/v1")
 app.include_router(analyze.router, prefix="/api/v1")
+app.include_router(ats.router, prefix="/api/v1")
+app.include_router(tailor.router, prefix="/api/v1")
 
 # Monolith: the UI is served by the same FastAPI process (http://127.0.0.1:8000/)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
